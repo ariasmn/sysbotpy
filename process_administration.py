@@ -8,9 +8,9 @@ class Process:
 
 
 def sendProcesses():
-   running_process_list = []
-   for proc in psutil.process_iter():
+    running_process_list = []
+    for proc in psutil.process_iter():
       p = Process(proc.name(), proc.memory_percent())
       running_process_list.append(p)
-      running_process_list.sort(key=lambda x: x.mem, reverse=True)
-      return running_process_list
+    running_process_list.sort(key=lambda x: x.mem, reverse=True)
+    return running_process_list
