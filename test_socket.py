@@ -13,7 +13,7 @@ def devolverAlgo(sc):
 while True:
     sc, addr = server_socket.accept()
     print ("IP del cliente: ", addr)
-    
+     
     received = (sc.recv(48000)).decode('utf8')
 
     if received.strip() == "algo":
