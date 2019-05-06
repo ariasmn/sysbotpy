@@ -27,10 +27,8 @@ def sendSystemInfo():
     if platform.system() == 'Linux':
         info = Host(platform.linux_distribution(), socket.gethostname(), getpass.getuser(), getIP(), procadmin.sendProcesses())
         info.os = " ".join(info.os) #formatting. linux_distribution() returns a list of string, join them with an space between them.
-    elif platform.system() == 'Windows':
-        print ("????")
     else:
-        print ("????")
+        info = Host(platform.platform(), socket.gethostname(), getpass.getuser(), getIP(), procadmin.sendProcesses())
     return info
 
 sendSystemInfo()
