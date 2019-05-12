@@ -8,9 +8,9 @@ server_socket.bind(("", 1337))
 server_socket.listen(15)
 
 print ("Testing para proyecto\n")
+sc, addr = server_socket.accept()
 
 while True:
-    sc, addr = server_socket.accept()
      
     received = (sc.recv(48000)).decode('utf8')
 
@@ -19,3 +19,7 @@ while True:
         print (info.os)
     elif received.strip() == "apaga":
         hostadmin.shutdownHost()
+    elif received.strip() == "reinicia":
+        hostadmin.restartHost()
+    else:
+        print("No se reconoce el comando")
