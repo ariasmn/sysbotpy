@@ -8,7 +8,12 @@ server_socket.bind(("", 1337))
 server_socket.listen(15)
 
 print ("Testing para proyecto\n")
+
 sc, addr = server_socket.accept()
+
+if addr[0] != SERVER_ADDR:
+    sc.close()
+    exit()
 
 while True:
      
