@@ -43,5 +43,3 @@ def restartHost():
         os.system("shutdown /r /t 1")
     else:
         os.system('systemctl restart')
-
-
