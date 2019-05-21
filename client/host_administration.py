@@ -37,6 +37,7 @@ def shutdownHost():
         os.system('shutdown /p /f')
     else:
         os.system('systemctl poweroff')
+    
 
 def restartHost():
     if platform.system() == "Windows":

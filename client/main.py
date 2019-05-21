@@ -1,5 +1,6 @@
 import socket
 import socketserver
+import json
 import host_administration as hostadmin
 
 SERVER_ADDR = "192.168.1.232"
@@ -14,7 +15,10 @@ class handler (socketserver.BaseRequestHandler):
             command = self.request.recv(1024).decode('utf-8').strip()
             if command == "info":
                 info = hostadmin.sendSystemInfo()
-                print (info.os)
+                #json_object = json.dumps({'os': info.os, 'hostname': info.hostname, 'user_logged': info.user_logged, 'ip_addr':info.ip_addr})
+                json_object = json.dumps(info.processes, default = lambda x: x.__dict__)
+                print (json_object)
+                #self.request.sendall(jsons.dump(info))
             elif command == "shutdown":
                 hostadmin.shutdownHost()
             elif command == "restart":
