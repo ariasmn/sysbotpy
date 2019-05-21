@@ -12,5 +12,6 @@ def sendProcesses():
     for proc in psutil.process_iter():
       p = Process(proc.name(), proc.memory_percent())
       running_process_list.append(p)
+      #what to sort from. Using lambda function so you don´t have to define another function.
     running_process_list.sort(key=lambda x: x.mem, reverse=True)
-    return running_process_list
+    return running_process_list[:10]

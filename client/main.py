@@ -3,7 +3,7 @@ import socketserver
 import json
 import host_administration as hostadmin
 
-SERVER_ADDR = "192.168.1.232"
+SERVER_ADDR = "192.168.1.60"
 
 class handler (socketserver.BaseRequestHandler):
     #need to be overriden. You will pass this class as an argument in the ThreadedServer declaration
@@ -15,10 +15,9 @@ class handler (socketserver.BaseRequestHandler):
             command = self.request.recv(1024).decode('utf-8').strip()
             if command == "info":
                 info = hostadmin.sendSystemInfo()
-                #json_object = json.dumps({'os': info.os, 'hostname': info.hostname, 'user_logged': info.user_logged, 'ip_addr':info.ip_addr})
-                json_object = json.dumps(info.processes, default = lambda x: x.__dict__)
-                print (json_object)
-                #self.request.sendall(jsons.dump(info))
+                # using default lambda ... you are telling the serializer to convert to an object if the python type is not primitive. Needed for processes nested object.
+                json_object = json.dumps(info, default = lambda x: x.__dict__)
+                self.request.sendall(json_object.encode())
             elif command == "shutdown":
                 hostadmin.shutdownHost()
             elif command == "restart":

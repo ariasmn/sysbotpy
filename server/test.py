@@ -2,8 +2,9 @@
 
 import socket
 import sys
+import json
 
-host = '192.168.1.232'
+host = '192.168.1.60'
 port = 1337
 
 # create socket
@@ -37,6 +38,6 @@ except socket.error:
 
 # Receive data
 print('# Receive data from server')
-reply = pickle.loads(s.recv(4096))
+reply = (s.recv(4096)).decode()
 
 print (reply) 
