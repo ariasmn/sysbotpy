@@ -1,3 +1,6 @@
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler
+import requests
+import re
 import socket
 import sys
 import json
@@ -22,6 +25,7 @@ def run(subnet):
     return up_hosts
 
 def get_data(hosts):
+    hosts_json = []
     for host in hosts:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,7 +39,23 @@ def get_data(hosts):
             print ('Send failed')
             sys.exit()
         reply = (s.recv(4096)).decode()
-        print (reply)
+        hosts_json.append(reply)
+    return hosts_json
 
-hosts = run("192.168.1.")
-get_data(hosts)
+def bop(bot, update):
+    data = get_data(run('192.168.1.'))
+    for each_host in data:
+        each_host = json.loads(each_host)
+        chat_id = update.message.chat_id
+        bot.send_message(chat_id=chat_id, text=each_host['os'])
+
+def main():
+    updater = Updater('812262356:AAF1nhoDeCKaZzGax_wpFSuUsLD2c-1gGB0')
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('bop',bop))
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
+
