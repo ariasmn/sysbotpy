@@ -3,7 +3,7 @@ import socketserver
 import json
 import host_administration as hostadmin
 
-SERVER_ADDR = "192.168.1.60"
+SERVER_ADDR = "192.168.1.64"
 
 class handler (socketserver.BaseRequestHandler):
     #need to be overriden. You will pass this class as an argument in the ThreadedServer declaration
@@ -19,11 +19,12 @@ class handler (socketserver.BaseRequestHandler):
                 json_object = json.dumps(info, default = lambda x: x.__dict__)
                 self.request.sendall(json_object.encode())
             elif command == "shutdown":
-                hostadmin.shutdownHost()
+                success = hostadmin.shutdownHost()
+                self.request.sendall(success.encode())
             elif command == "restart":
                 hostadmin.restartHost()
             else:
-                print ("Can't recognize command")
+                print ("Can't recognize command or a port scan")
 
 class ThreadedServer (socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
