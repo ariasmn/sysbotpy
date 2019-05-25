@@ -68,6 +68,11 @@ def shutdown_host (host):
 
 def all(bot, update):
     data = get_data(run('192.168.1.'))
+    
+    if not data:
+        chat_id = update.message.chat_id
+        bot.send_message(chat_id=chat_id, text="No hay hosts vivos")
+        return 
     for each_host in data:
         each_host = json.loads(each_host)
 
@@ -75,7 +80,7 @@ def all(bot, update):
                     InlineKeyboardButton("Reiniciar", callback_data=each_host['ip_addr'] + ",restart")]]
 
         
-        chat_id = update.message.chat_id
+        
         message = ("- *Sistema operativo* : " + each_host['os'] + 
             "\n- *Nombre de host* : " + each_host['hostname'] + 
             "\n- *Usuario logeado* : " + each_host['user_logged'] +
