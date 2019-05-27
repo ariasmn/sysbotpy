@@ -13,9 +13,6 @@ class Host:
         self.ip_addr = ip_addr
         self.processes = processes
 
-    def toJson(self):
-        pass
-
 def getIP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:

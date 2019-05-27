@@ -2,8 +2,13 @@ import socket
 import socketserver
 import json
 import host_administration as hostadmin
+import configparser
 
-SERVER_ADDR = "192.168.1.64"
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+SERVER_ADDR = config.get('DEFAULT', 'SERVER_ADDR')
+PORT = config.getint('DEFAULT', 'PORT')
 
 class handler (socketserver.BaseRequestHandler):
     #need to be overriden. You will pass this class as an argument in the ThreadedServer declaration
@@ -29,5 +34,5 @@ class handler (socketserver.BaseRequestHandler):
 class ThreadedServer (socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
-local_server = ThreadedServer(('', 1337), handler)
+local_server = ThreadedServer(('', PORT), handler)
 local_server.serve_forever()
