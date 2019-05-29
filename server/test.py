@@ -66,45 +66,62 @@ def shutdown_host (host):
         print ('Send failed')
         sys.exit()
 
+def restart_host (host):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    except socket.error:
+        print (socket.error)
+    s.connect((host, PORT))
+    request = ("restart").encode()
+    try:
+        s.sendall(request)
+    except socket.error:
+        print ('Send failed')
+        sys.exit()
+
 def all(bot, update):
     data = get_data(run('192.168.1.'))
-    
+    chat_id = update.message.chat_id
+
     if not data:
-        chat_id = update.message.chat_id
         bot.send_message(chat_id=chat_id, text="No hay hosts vivos")
         return 
     for each_host in data:
         each_host = json.loads(each_host)
-
+       
         keyboard = [[InlineKeyboardButton("Apagar", callback_data=each_host['ip_addr'] + ",shutdown"),
                     InlineKeyboardButton("Reiniciar", callback_data=each_host['ip_addr'] + ",restart")]]
 
+        message = ("- Sistema operativo : " + each_host['os'] + 
+            "\n- Nombre de host : " + each_host['hostname'] + 
+            "\n- Usuario logeado : " + each_host['user_logged'] +
+            "\n- IP local : " + each_host['ip_addr'])
         
-        
-        message = ("- *Sistema operativo* : " + each_host['os'] + 
-            "\n- *Nombre de host* : " + each_host['hostname'] + 
-            "\n- *Usuario logeado* : " + each_host['user_logged'] +
-            "\n- *IP local* : " + each_host['ip_addr'])
+        if "Windows" in each_host['os']:
+            photo = open("assets/windows.png", "rb")
+        else:
+            photo = open("assets/linux.png", "rb")
 
         reply_markup = InlineKeyboardMarkup(keyboard)
-        bot.send_message(chat_id=chat_id, text=message, parse_mode="Markdown", reply_markup = reply_markup)
+        bot.send_photo(chat_id=chat_id, photo=photo, caption=message, reply_markup=reply_markup)
+       
 
 def inline_button_callback(bot, update):
     query = update.callback_query
-    """ bot.send_message(text="Selected option: {}".format(query.data),
-                    chat_id=query.message.chat_id,
-                    message_id=query.message.message_id) """
-    
+
     what_to_do = query.data.split(',')[1]
     host_ip = query.data.split(',')[0]
+
     if what_to_do == "shutdown":
         shutdown_host(host_ip)
+        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Host apagado")
     elif what_to_do == "restart":
-        print ("restart")
+        restart_host(host_ip)
+        bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
+        #bot.edit_message_caption(chat_id=query.message.chat_id, message_id=query.message.message_id, caption="Host reiniciado")
     else:
         print ("something went wrong")
-    #print (query.data.split(',')[0])
-
+    
 
 def main():
     updater = Updater('812262356:AAF1nhoDeCKaZzGax_wpFSuUsLD2c-1gGB0')
@@ -119,4 +136,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
