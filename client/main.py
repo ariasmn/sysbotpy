@@ -7,8 +7,8 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-SERVER_ADDR = config.get('DEFAULT', 'SERVER_ADDR')
-PORT = config.getint('DEFAULT', 'PORT')
+SERVER_ADDR = config.get('CONFIG', 'SERVER_ADDR')
+PORT = config.getint('CONFIG', 'PORT')
 
 class handler (socketserver.BaseRequestHandler):
     #need to be overriden. You will pass this class as an argument in the ThreadedServer declaration
@@ -29,7 +29,7 @@ class handler (socketserver.BaseRequestHandler):
             elif command == "restart":
                 hostadmin.restartHost()
             else:
-                print ("Can't recognize command or a port scan")
+                return
 
 class ThreadedServer (socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass

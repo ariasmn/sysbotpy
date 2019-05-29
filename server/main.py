@@ -6,17 +6,31 @@ import socket
 import sys
 import json
 import logging
+import configparser
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-PORT = 1337
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+PORT = config.getint('CONFIG', 'PORT')
+WHITELIST = json.loads(config.get('WHITELIST', 'id'))
+TOKEN = config.get('CONFIG', 'TOKEN')
+
+
+def check_permission(chat_id):
+    if chat_id not in WHITELIST:
+        return False
+    else:
+        return True
 
 
 def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+
 
 def is_up(addr):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,6 +41,7 @@ def is_up(addr):
     else:
         s.close()
 
+
 def run(subnet):
     up_hosts = []
     for ip in range(1,256):
@@ -34,6 +49,7 @@ def run(subnet):
         if is_up(addr):
             up_hosts.append(addr)
     return up_hosts
+
 
 def get_data(hosts):
     hosts_json = []
@@ -53,6 +69,7 @@ def get_data(hosts):
         hosts_json.append(reply)
     return hosts_json
 
+
 def shutdown_host (host):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,6 +82,7 @@ def shutdown_host (host):
     except socket.error:
         print ('Send failed')
         sys.exit()
+
 
 def restart_host (host):
     try:
@@ -79,9 +97,15 @@ def restart_host (host):
         print ('Send failed')
         sys.exit()
 
+
 def all(bot, update):
-    data = get_data(run('192.168.1.'))
     chat_id = update.message.chat_id
+    
+    if not check_permission(chat_id):
+        bot.send_message(chat_id=chat_id, text="No tienes permitido ejecutar comandos en este bot. Contacte con el administrador")
+        return
+
+    data = get_data(run('192.168.1.'))  
 
     if not data:
         bot.send_message(chat_id=chat_id, text="No hay hosts vivos")
@@ -104,7 +128,7 @@ def all(bot, update):
 
         reply_markup = InlineKeyboardMarkup(keyboard)
         bot.send_photo(chat_id=chat_id, photo=photo, caption=message, reply_markup=reply_markup)
-       
+
 
 def inline_button_callback(bot, update):
     query = update.callback_query
@@ -114,19 +138,33 @@ def inline_button_callback(bot, update):
 
     if what_to_do == "shutdown":
         shutdown_host(host_ip)
-        bot.edit_message_text(chat_id=query.message.chat_id, message_id=query.message.message_id, text="Host apagado")
+        bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
     elif what_to_do == "restart":
         restart_host(host_ip)
         bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
         #bot.edit_message_caption(chat_id=query.message.chat_id, message_id=query.message.message_id, caption="Host reiniciado")
     else:
-        print ("something went wrong")
+        return
     
 
+def start(bot, update):
+    chat_id = update.message.chat_id
+    
+    if not check_permission(chat_id):
+        bot.send_message(chat_id=chat_id, text="No tienes permitido ejecutar comandos en este bot. Contacte con el administrador")
+        return
+
+    bot.send_message(chat_id=chat_id, text=("Bot de Telegram para la administración de sistemas\n"
+        "Realizado por Ismael Arias para CFGS de DAM\n"
+        "IES Virgen del Carmen\n\n"
+        "Puede ver los comandos disponibles haciendo click en el icono de '/' en tu cliente de Telegram"))
+
+
 def main():
-    updater = Updater('812262356:AAF1nhoDeCKaZzGax_wpFSuUsLD2c-1gGB0')
+    updater = Updater(TOKEN)
     dp = updater.dispatcher
 
+    dp.add_handler(CommandHandler('start',start))
     dp.add_handler(CommandHandler('all',all))
     dp.add_handler(CallbackQueryHandler(inline_button_callback))
     dp.add_error_handler(error)
