@@ -3,9 +3,11 @@ import socketserver
 import json
 import host_administration as hostadmin
 import configparser
+import os
 
+actual_path = os.path.dirname(os.path.abspath(__file__))
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(os.path.join(actual_path, 'config.ini'))
 
 SERVER_ADDR = config.get('CONFIG', 'SERVER_ADDR')
 PORT = config.getint('CONFIG', 'PORT')

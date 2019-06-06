@@ -7,13 +7,15 @@ import sys
 import json
 import logging
 import configparser
+import os
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+actual_path = os.path.dirname(os.path.abspath(__file__))
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(os.path.join(actual_path, 'config.ini'))
 
 PORT = config.getint('CONFIG', 'PORT')
 WHITELIST = json.loads(config.get('WHITELIST', 'id'))
