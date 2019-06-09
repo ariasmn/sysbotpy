@@ -43,4 +43,4 @@ def restartHost():
     if platform.system() == "Windows":
         os.system("shutdown /r /t 1")
     else:
-        os.system('systemctl restart')
+        os.system('systemctl reboot')
