@@ -3,7 +3,7 @@ A Telegram Bot implementation for basic system monitoring and administration.
 Final project for my AD/HND in Software Engineering.
 
 ## SYNOPSIS
-It's an easy distributed application based in a client-server model, using the [Telegram Bot API](https://core.telegram.org/bots/api). You can get basic info like local IP, OS, logged user, and also shutdown/restart the host via a private Telegram Bot. It relies on TCP socket programming for local network communication between the server and the hosts.
+It's an easy distributed application based in a client-server model, using the [Telegram Bot API](https://core.telegram.org/bots/api). You can get basic info like local IP, OS, logged user, and also shutdown/restart the host via a private Telegram Bot. It uses TCP socket programming for local network communication between the server and the hosts.
 
 This is not a well-tested, neither a stable implementation, and it's only intended for home/personal use, since it was made mostly to learn about Python, socket programming, freezing tools and running Python scripts as services in Windows/Linux.
 
@@ -27,7 +27,7 @@ For the installation, you have the choice to run the script normally with Python
     pip install -r requirements.txt
 It's up to you if you use [virtualenv](https://github.com/pypa/virtualenv).
 
-Also, the implementation has been tested in **Nuitka**, and it's working with the client script without any problems (as far as I can tell). To compile it, I used the option **standalone**, so the host don't need to have any Python interpreter installed:
+Also, the implementation has been tested in **Nuitka**, and it's working with the client script without any problems (as far as I can tell). To compile it, I used the option **standalone**, so the host doesn't need to have any Python interpreter installed:
 
     python -m nuitka --standalone --follow-imports main.py
 Keep in mind that you need to compile in the OS you are willing to run the application in. Also, a C Compiler is needed for Windows, but you can find all the information you need in the [Nuitka user manual page.](https://nuitka.net/doc/user-manual.html)
