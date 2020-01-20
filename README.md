@@ -27,11 +27,11 @@ For the installation, you have the choice to run the script normally with Python
     pip install -r requirements.txt
 It's up to you if you use [virtualenv](https://github.com/pypa/virtualenv).
 
-Also, the implementation has been tested in **Nuitka**, and it's working with the client script without any problems (as far as I can tell). To compile it, I used the option **standalone**, so the host doesn't need to have any Python interpreter installed:
+The implementation has been tested in **Nuitka**, and it's working with the client script without any problems (as far as I can tell). To compile it, I used the option **standalone**, so the host doesn't need to have any Python interpreter installed:
 
     python -m nuitka --standalone --follow-imports main.py
-Keep in mind that you need to compile in the OS you are willing to run the application in. Also, a C Compiler is needed for Windows, but you can find all the information you need in the [Nuitka user manual page.](https://nuitka.net/doc/user-manual.html)
+Keep in mind that you need to compile in the OS you are willing to run the application in. A C Compiler is needed for Windows, but you can find all the information you need in the [Nuitka user manual page.](https://nuitka.net/doc/user-manual.html)
 
-Also, in both client and server you can find a **config.ini** file. In the client, you can set the port to use and the server IP address (better if you do it using a firewall). In the server, you can set the port, your Telegram Bot private token and the ID of the Telegram users that are whitelisted (only those whitelisted users are capable of using the bot). 
+In both the client and server you can find a **config.ini** file. In the client, you can set the port to use and the server IP address (better if you do it using a firewall). In the server, you can set the port, your Telegram Bot private token and the ID of the Telegram users that are whitelisted (only those whitelisted users are capable of using the bot). 
 
 In order to create your Telegram Bot, you need to use [BotFather](https://core.telegram.org/bots#3-how-do-i-create-a-bot).
